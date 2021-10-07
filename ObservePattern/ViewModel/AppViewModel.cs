@@ -1,5 +1,6 @@
 ﻿using ObservePattern.Command;
 using ObservePattern.Model;
+using ObservePattern.Pattern;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,63 +29,23 @@ namespace ObservePattern.ViewModel
         }
         public RelayCommand AddCostumerCommand { get; set; }
         public RelayCommand NotifyAllCommand { get; set; }
-        public List<Customer> customers { get; set; } = new List<Customer>();
-       
+
+        public Store store = new Store();
 
         public AppViewModel()
         {
-            //MusicPlayer musicPlayer = new MusicPlayer();
-            //musicPlayer.ChangeState(new OffState());
-
-            //DotCommand = new RelayCommand((e) =>
-            //{
-
-            //    if (!Toggled)
-            //    {
-            //        musicPlayer.ChangeState(new OnState());
-            //        Dot.Fill = On;
-            //        Toggled = true;
-            //        Dot.Margin = RightSide;
-            //        click = true;
-            //    }
-            //    else
-            //    {
-            //        musicPlayer.ChangeState(new OffState());
-            //        Dot.Fill = Off;
-            //        Toggled = false;
-            //        Dot.Margin = LeftSide;
-            //        click = false;
-
-            //    }
-            //});
-
-            //PauseCommand = new RelayCommand((e) =>
-            //{
-            //    if (path != null)
-            //    {
-            //        player.Pause();
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("File not found");
-            //    }
-            //}, (p) =>
-            //{
-
-            //    return musicPlayer.GetCanPause();
-            //});
+            
 
             AddCostumerCommand = new RelayCommand((e) =>
             {
                 if (ControlMail.Control(Email))
-                {
-                    Customer customer = new Customer
-                    {
+                {                    
+                    store.Attach(new Customer {
                         ProductName = ProductName,
                         EmailAdress = Email
-                    };
-                    customers.Add(customer);
-                    MessageBox.Show("Email successfully added");
+                    });                    
+                    
+                    MessageBox.Show("Customer successfully added");
                     ProductName = string.Empty;
                     Email = string.Empty;
                 }
@@ -99,10 +60,8 @@ namespace ObservePattern.ViewModel
 
             NotifyAllCommand = new RelayCommand((e) =>
             {
-                foreach (var customer in customers)
-                {
-                    SendMail.Send(customer.EmailAdress);
-                }
+                store.Notify();
+                MessageBox.Show("Message sending");
             });
 
 
